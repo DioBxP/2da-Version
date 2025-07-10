@@ -1,0 +1,48 @@
+const express = require('express');
+const { MongoClient } = require('mongodb');
+
+const app = express();
+const port = 3000;
+
+// Reemplaza 'appUser' y 'passwordApp' con tus credenciales reales
+const url = "mongodb://appUser:passwordApp@localhost:27017/mydatabase";
+const client = new MongoClient(url);
+
+async function main() {
+  try {
+    await client.connect();
+    console.log('Connected successfully to MongoDB'); // Esto indica que la con>
+
+    const db = client.db('mydatabase');
+    const collection = db.collection('documents');
+
+    // Ejemplo: Insertar algunos documentos si la colección está vacía (opciona>
+    const count = await collection.countDocuments();
+    if (count === 0) {
+      console.log('Inserting initial documents...');
+      await collection.insertMany([
+        { name: "Document 1", content: "Content of Document 1" },
+        { name: "Document 2", content: "Content of Document 2" },
+        { name: "Document 3", content: "Content of Document 3" },
+        { name: "Gonzalezzz", content: "Josueee" }, // Estos ya los habías inse>
+        { name: "Jesusss", content: "Jesusss" } // Estos ya los habías insertado
+      ]);
+      console.log('Initial documents inserted.');
+    }
+
+    // Ruta para obtener todos los documentos
+    app.get('/', async (req, res) => {
+      const docs = await collection.find({}).toArray();
+      res.json(docs); // Debería mostrar un JSON con tus documentos
+    });
+
+    app.listen(port, () => {
+      console.log(`App listening at http://localhost:${port}`); // Esto indica >
+    });
+
+  } catch (err) {
+    console.error('Error connecting to MongoDB or starting app:', err);
+  }
+}
+
+main().catch(console.error);
