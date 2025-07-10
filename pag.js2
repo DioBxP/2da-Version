@@ -1,0 +1,148 @@
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Servidor Minecraft en Google Colab</title>
+      <style>
+        body {
+          background-color: #f3f3f3;
+          color: #222;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          margin: 0;
+          padding: 20px;
+        }
+        .mc-container {
+          background-color: #ffffff;
+          border: 1px solid #ccc;
+          border-radius: 10px;
+          padding: 30px;
+          max-width: 800px;
+          margin: auto;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+          color: #2c3e50;
+          text-align: center;
+        }
+        .step {
+          margin: 20px 0;
+          padding: 15px;
+          border-left: 4px solid #2980b9;
+          background-color: #f9f9f9;
+          border-radius: 5px;
+        }
+        .step-title {
+          font-size: 18px;
+          font-weight: bold;
+          cursor: pointer;
+          color: #2980b9;
+        }
+        .step-content {
+          display: none;
+          margin-top: 10px;
+        }
+        .cmd-block {
+          background-color: #eeeeee;
+          border-left: 3px solid #7f8c8d;
+          padding: 10px;
+          margin: 10px 0;
+          border-radius: 5px;
+          font-family: monospace;
+          color: #333;
+          white-space: pre-line;
+        }
+        code {
+          display: block;
+          padding: 4px 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="mc-container">
+        <h1>Servidor de Minecraft en Google Colab</h1>
+
+        <div class="step">
+          <div class="step-title" onclick="toggleStep(this)">1. Requisitos</div>
+          <div class="step-content">
+            <ul>
+              <li>Cuenta de Google</li>
+              <li>Google Colab</li>
+              <li>Minecraft Java Edition</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-title" onclick="toggleStep(this)">2. Código en Google Colab</div>
+          <div class="step-content">
+            <p>Ejecuta estos comandos:</p>
+            <div class="cmd-block">
+              <code>sudo apt update && apt install openjdk-17-jdk -y</code>
+            </div>
+            <div class="cmd-block">
+              <code>wget https://launcher.mojang.com/v1/objects/edc62a8f4e3e5f80ba4032fd3f2dd14a6a89e85c/server.jar</code>
+              <code>echo "eula=true" > eula.txt</code>
+              <code>java -Xmx1G -Xms1G -jar server.jar nogui</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-title" onclick="toggleStep(this)">3. Usar Ngrok</div>
+          <div class="step-content">
+            <div class="cmd-block">
+              <code>pip install pyngrok</code>
+              <code>
+from pyngrok import ngrok
+ngrok.set_auth_token("TU_TOKEN_AQUI")
+t = ngrok.connect(25565, "tcp")
+print(t)
+              </code>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-title" onclick="toggleStep(this)">4. Conexión desde Minecraft</div>
+          <div class="step-content">
+            <p>Usa la IP de ngrok (ejemplo: <code>0.tcp.ngrok.io:xxxxx</code>) como dirección del servidor.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-title" onclick="toggleStep(this)">5. Advertencias</div>
+          <div class="step-content">
+            <ul>
+              <li>Colab se cierra tras inactividad.</li>
+              <li>Máximo recomendado: 1-2 jugadores.</li>
+              <li>Para uso temporal o demostraciones.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>Creado por Grupo 2</h2>
+        <p>Diocles Bacusoy, Adonis Mero, Roony Gaibor (desaparecido)</p>
+      </div>
+
+      <script>
+        function toggleStep(el) {
+          const content = el.nextElementSibling;
+          content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+app.listen(port, () => {
+  console.log('Servidor corriendo en http://localhost:' + port);
+});
